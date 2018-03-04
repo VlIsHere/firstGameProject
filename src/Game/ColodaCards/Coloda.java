@@ -11,28 +11,28 @@ public class Coloda {
         cards = new ArrayList<>(36);
         for (int i = 0; i < 4; i++) {
             for (int j = 6; j < 11; j++) {
-                cards.add(new Card(String.valueOf(j),"Пики",j));
-                cards.add(new Card(String.valueOf(j),"Червы",j));
-                cards.add(new Card(String.valueOf(j),"Трефы",j));
-                cards.add(new Card(String.valueOf(j),"Бубны",j));
+                cards.add(new Card(String.valueOf(j),"♠",j));
+                cards.add(new Card(String.valueOf(j),"♥",j));
+                cards.add(new Card(String.valueOf(j),"♣",j));
+                cards.add(new Card(String.valueOf(j),"♦",j));
             }
         }
-        cards.add(new Card("Валет","Пики",11));
-        cards.add(new Card("Валет","Червы",11));
-        cards.add(new Card("Валет","Трефы",11));
-        cards.add(new Card("Валет","Бубны",11));
-        cards.add(new Card("Дама","Пики",12));
-        cards.add(new Card("Дама","Червы",12));
-        cards.add(new Card("Дама","Трефы",12));
-        cards.add(new Card("Дама","Бубны",12));
-        cards.add(new Card("Король","Пики",13));
-        cards.add(new Card("Король","Червы",13));
-        cards.add(new Card("Король","Трефы",13));
-        cards.add(new Card("Король","Бубны",13));
-        cards.add(new Card("Туз","Пики",14));
-        cards.add(new Card("Туз","Червы",14));
-        cards.add(new Card("Туз","Трефы",14));
-        cards.add(new Card("Туз","Бубны",14));
+        cards.add(new Card("Валет","♠",11));
+        cards.add(new Card("Валет","♥",11));
+        cards.add(new Card("Валет","♣",11));
+        cards.add(new Card("Валет","♦",11));
+        cards.add(new Card("Дама","♠",12));
+        cards.add(new Card("Дама","♥",12));
+        cards.add(new Card("Дама","♣",12));
+        cards.add(new Card("Дама","♦",12));
+        cards.add(new Card("Король","♠",13));
+        cards.add(new Card("Король","♥",13));
+        cards.add(new Card("Король","♣",13));
+        cards.add(new Card("Король","♦",13));
+        cards.add(new Card("Туз","♠",14));
+        cards.add(new Card("Туз","♥",14));
+        cards.add(new Card("Туз","♣",14));
+        cards.add(new Card("Туз","♦",14));
     }
 
     public void reshuffle(ArrayList<Card> pack) {
