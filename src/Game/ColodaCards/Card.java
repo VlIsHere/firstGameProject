@@ -1,13 +1,26 @@
 package Game.ColodaCards;
 
 public class Card implements Comparable<Card> {
+
     private String name;
     private String mast;
     private int code;
-    private static String mastPriority;
 
-    public static void setMastPriority(String mast){
-        mastPriority = mast;
+    public String getName() {
+        return name;
+    }
+
+    public String getMast() {
+        return mast;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public Card(String name, String mast,int code){
@@ -18,14 +31,6 @@ public class Card implements Comparable<Card> {
 
     @Override
     public int compareTo(Card o) {
-        if (!mast.equals(o.mast)) {
-            if (mast.equals(mastPriority)) return  1;
-            else if (o.mast.equals(mastPriority)) return -1;
-            else return 0;
-        }
-        else {
-            if (this.code > o.code) return 1;
-            else return -1;
-        }
+        return Integer.compare(code,o.code);
     }
 }
