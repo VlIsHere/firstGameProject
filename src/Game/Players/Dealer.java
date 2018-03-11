@@ -2,17 +2,25 @@ package Game.Players;
 
 import Game.ColodaCards.Card;
 import Game.ColodaCards.Coloda;
-
 import java.util.Date;
 import java.util.Random;
 
 public class Dealer {
     private Coloda coloda;
     private String mainMast;
+    public static Dealer dealer = new Dealer();
 
-    public Dealer(String mainMast){
-        this.mainMast = mainMast;
+    private Dealer(){
+        mainMast = null;
         coloda = new Coloda();
+    }
+
+    public void distributionCards(Player[] players){
+        for (int i = 0; i < players.length; i++) {
+            for (int j = 0; j < 10; j++) {
+                players[i].takeCard(coloda.getCard(j));
+            }
+        }
     }
 
     //тасуется
@@ -54,7 +62,7 @@ public class Dealer {
     }
 
     //выбрали козырь
-    public void createMainMast(String mast){
+    public void setMainMast(String mast){
         mainMast = mast;
         Card card;
         for (int i = 0; i < coloda.getSize(); i++) {

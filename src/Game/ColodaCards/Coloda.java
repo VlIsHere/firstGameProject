@@ -1,11 +1,10 @@
 package Game.ColodaCards;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
+import java.util.List;
 
 public class Coloda {
-    private ArrayList<Card> cards;
+    private List<Card> cards;
     public static final String PIKI = "♠";
     public static final String CHERVY = "♥";
     public static final String TREFY = "♣";

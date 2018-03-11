@@ -23,7 +23,7 @@ public class Card implements Comparable<Card> {
         this.code = code;
     }
 
-    public Card(String name, String mast,int code){
+    Card(String name, String mast,int code){
         this.mast = mast;
         this.name = name;
         this.code = code;
@@ -32,5 +32,10 @@ public class Card implements Comparable<Card> {
     @Override
     public int compareTo(Card o) {
         return Integer.compare(code,o.code);
+    }
+
+    @Override
+    public String toString(){
+        return name + mast;
     }
 }
