@@ -15,6 +15,7 @@ public class Dealer {
         coloda = new Coloda();
     }
 
+    //razdacha
     public void distributionCards(Player[] players){
         for (int i = 0; i < players.length; i++) {
             for (int j = 0; j < 10; j++) {
