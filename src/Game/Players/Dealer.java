@@ -2,20 +2,27 @@ package Game.Players;
 
 import Game.ColodaCards.Card;
 import Game.ColodaCards.Coloda;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 public class Dealer {
     private Coloda coloda;
     private String mainMast;
+    public int countRazdach;
     public static Dealer dealer = new Dealer();
 
     private Dealer(){
         mainMast = null;
         coloda = new Coloda();
+        countRazdach = 0;
+    }
+
+    public int getCountRazdach() {
+        return countRazdach;
+    }
+
+    public void incCountRazdach() {
+        countRazdach++;
     }
 
     public Card giveCard(int i){

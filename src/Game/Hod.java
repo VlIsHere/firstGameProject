@@ -6,7 +6,7 @@ public class Hod {
     private Card[] vzyatka;
     private int countCards;
 
-    public Hod(){
+    Hod(){
         vzyatka = new Card[3];
     }
 
@@ -20,6 +20,18 @@ public class Hod {
 
     public Card[] getVzyatka(){
         return vzyatka;
+    }
+
+    public int getNumWhoTake(){
+        Card max = vzyatka[0];
+        int index = 0;
+        for (int i = 1; i < vzyatka.length; i++) {
+            if (vzyatka[i].compareTo(max)>1){
+                max = vzyatka[i];
+                index = i;
+            }
+        }
+        return index;
     }
 
     public void resetvzyatka(){

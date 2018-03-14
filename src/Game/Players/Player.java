@@ -1,9 +1,9 @@
 package Game.Players;
 
 import Game.ColodaCards.Card;
-import Game.Hod;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Player {
@@ -18,7 +18,13 @@ public class Player {
     private ArrayList<Card> chervy;
     private ArrayList<Card> dominateMast;
     private String gameStyle;
+    private int countVzyatok;
+    private int realCntVzyatok;
+    private List<Card[]> vzyatki;
 
+    public void setRealCntVzyatok(int realCntVzyatok) {
+        this.realCntVzyatok = realCntVzyatok;
+    }
 
     public void setGameStyle(String gameStyle) {
         this.gameStyle = gameStyle;
@@ -26,16 +32,67 @@ public class Player {
 
     public Player(String name){
         this.name = name;
-        razdacha = new ArrayList<>(10);
+        razdacha = new ArrayList<>();
        piki = new ArrayList<>(8);
        trefy= new ArrayList<>(8);
        bubi= new ArrayList<>(8);
        chervy= new ArrayList<>(8);
        gameStyle = "";
+       vzyatki = new LinkedList<>();
     }
 
-    public Card doHod(Card[] cardsShown){
+    public Card doHod(Card[] cardsShown,int countCardsOpened){
+        Card res = null; int indexRes = 0;
+        if (gameStyle.equals("mizer") || gameStyle.equals("pass")){
+            if (countCardsOpened==0){
+                indexRes = findIndMinCard();
+            }else if (countCardsOpened==1){
+                indexRes = getCardSmallerThis(cardsShown[0]);
+                if (indexRes==-1) indexRes = findIndMaxCard();
+            }else {
+                indexRes = cardsShown[0].compareTo(cardsShown[1])<0?
+                        getCardSmallerThis(cardsShown[0]):getCardSmallerThis(cardsShown[1]);
+            }
+        }else {
+            if (countVzyatok>realCntVzyatok){
+                if (countCardsOpened==0){
+                    indexRes = findIndMaxCard();
+                }else if (countCardsOpened==1){
+                    indexRes = getCardBiggerThis(cardsShown[0]);
+                    if (indexRes==-1) indexRes = findIndMinCard();
+                }else {
+                    indexRes = cardsShown[0].compareTo(cardsShown[1])>0?
+                            getCardBiggerThis(cardsShown[0]):getCardBiggerThis(cardsShown[1]);
+                }
+            }else {
+                indexRes = (int)(Math.random()*razdacha.size());
+            }
+        }
+        res = razdacha.get(indexRes);
+        razdacha.remove(indexRes);
+        return res;
+    }
 
+    public void takeVzyatka(Card[] cards){
+        vzyatki.add(cards);
+    }
+
+    public int getCardBiggerThis(Card card){
+        for (int i = 0; i < razdacha.size(); i++) {
+            if (razdacha.get(i).compareTo(card)>0){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int getCardSmallerThis(Card card){
+        for (int i = 0; i < razdacha.size(); i++) {
+            if (razdacha.get(i).compareTo(card)<0){
+                return i;
+            }
+        }
+        return -1;
     }
 
     public int getChoiceTypeGame(int mast,int oldMaxVzyatka){
@@ -103,7 +160,7 @@ public class Player {
         razdacha.remove(i);
     }
 
-    public int findMinCard(){
+    public int findIndMinCard(){
         int min = razdacha.get(0).getCode()%10;
         int indexMin = 0; Card tmp = null;
         for (int i = 0; i < razdacha.size(); i++) {
@@ -114,5 +171,18 @@ public class Player {
             }
         }
         return indexMin;
+    }
+
+    public int findIndMaxCard(){
+        int max = razdacha.get(0).getCode()%10;
+        int indexMax = 0; Card tmp = null;
+        for (int i = 0; i < razdacha.size(); i++) {
+            tmp = razdacha.get(i);
+            if (tmp.getCode()%10>max){
+                max = tmp.getCode()%10;
+                indexMax = i;
+            }
+        }
+        return indexMax;
     }
 }
