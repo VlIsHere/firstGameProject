@@ -2,7 +2,10 @@ package Game.Players;
 
 import Game.ColodaCards.Card;
 import Game.ColodaCards.Coloda;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public class Dealer {
@@ -13,6 +16,10 @@ public class Dealer {
     private Dealer(){
         mainMast = null;
         coloda = new Coloda();
+    }
+
+    public Card giveCard(int i){
+        return coloda.getCard(i);
     }
 
     //razdacha
