@@ -9,24 +9,29 @@ public class Game {
     private Rules rules;
     private API api;
     private StyleGame styleGame;
+    private int cntRazdach;
 
     public Game(){
         players = new Player[3];
         players[0] = new Player("Север");
         players[1] = new Player("Юг");
         players[2] = new Player("Запад");
+        api = new API(System.in,System.out);
         rules = new Rules(players);
-        api = new API();
         styleGame = new StyleGame();
     }
 
     public void play(){
-        for (int i = 0; i < 2; i++) {
+   //     cntRazdach = api.askAboutRazdacha();
+        cntRazdach = 1;
+        for (int i = 0; i < cntRazdach; i++) {
             Dealer.dealer.reshuffle();
             Dealer.dealer.distributionCards(players);
-            Dealer.dealer.incCountRazdach();
             rules.makePriorityPlayer();
-            rules.makeChoices();
+            api.playersInfo(players,i);
+            rules.makeChoices(api,i);
+            styleGame.rulePlayer = rules.getRulePlayer();
+            styleGame.numbRazd = i;
             styleGame.goStrategy(rules.getGameStrategy());
             //обнулять игру
         }
@@ -34,26 +39,33 @@ public class Game {
 
     private class StyleGame{
         private int rulePlayer;
+        private int numbRazd;
 
-        private
+        void process(){
+            Hod hod;
+            int tmp = 0;
+            for (int i = 0; i < 10; i++) {
+                hod = new Hod();
+                for (int j = 0; j < players.length; j++) {
+                    hod.setVzyatka(players[j].doHod(hod.getVzyatka(),hod.getCountCards()));
+                }
+                tmp = hod.getNumWhoTake();
+                api.rozygryshInfo(hod,players,numbRazd);
+                players[tmp].takeVzyatka(hod.getVzyatka());
+                rules.reMakePriorityPlayer(tmp);
+            }
+        }
 
         void mizer(){
             players[rulePlayer].dropCard(players[rulePlayer].findIndMaxCard());
             players[rulePlayer].dropCard(players[rulePlayer].findIndMaxCard());
             players[rulePlayer].takeCard(Dealer.dealer.giveCard(31));
             players[rulePlayer].takeCard(Dealer.dealer.giveCard(30));
-            Hod hod;
-            for (int i = 0; i < 10; i++) {
-                hod = new Hod();
-                for (int j = 0; j < players.length; j++) {
-                    hod.setVzyatka(players[i].doHod(hod.getVzyatka(),hod.getCountCards()));
-                }
-                players[hod.getNumWhoTake()].takeVzyatka(hod.getVzyatka());
-            }
+            process();
         }
 
         void raspas(){
-
+            process();
         }
 
         void vzyatka(){
@@ -61,16 +73,9 @@ public class Game {
             players[rulePlayer].dropCard(players[rulePlayer].findIndMinCard());
             players[rulePlayer].takeCard(Dealer.dealer.giveCard(31));
             players[rulePlayer].takeCard(Dealer.dealer.giveCard(30));
-            players[rulePlayer].setRealCntVzyatok(rules.getWinnerVzyatka());
+            players[rulePlayer].setCntVzyatok(rules.getWinnerVzyatka());
             Dealer.dealer.setMainMast(rules.getStringMast(rules.getWinnerMast()));
-            Hod hod;
-            for (int i = 0; i < 10; i++) {
-                hod = new Hod();
-                for (int j = 0; j < players.length; j++) {
-                    hod.setVzyatka(players[i].doHod(hod.getVzyatka(),hod.getCountCards()));//todo
-                }
-                players[hod.getNumWhoTake()].takeVzyatka(hod.getVzyatka());
-            }
+            process();
             Dealer.dealer.dropMainMast();
         }
 

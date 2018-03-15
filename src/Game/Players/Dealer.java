@@ -8,21 +8,10 @@ import java.util.Random;
 public class Dealer {
     private Coloda coloda;
     private String mainMast;
-    public int countRazdach;
     public static Dealer dealer = new Dealer();
 
     private Dealer(){
-        mainMast = null;
         coloda = new Coloda();
-        countRazdach = 0;
-    }
-
-    public int getCountRazdach() {
-        return countRazdach;
-    }
-
-    public void incCountRazdach() {
-        countRazdach++;
     }
 
     public Card giveCard(int i){
@@ -32,7 +21,7 @@ public class Dealer {
     //razdacha
     public void distributionCards(Player[] players){
         for (int i = 0; i < players.length; i++) {
-            for (int j = 0; j < 10; j++) {
+            for (int j = i*10; j < 10*(i+1); j++) {
                 players[i].takeCard(coloda.getCard(j));
             }
         }

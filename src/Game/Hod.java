@@ -26,7 +26,7 @@ public class Hod {
         Card max = vzyatka[0];
         int index = 0;
         for (int i = 1; i < vzyatka.length; i++) {
-            if (vzyatka[i].compareTo(max)>1){
+            if (vzyatka[i].compareTo(max)>0){
                 max = vzyatka[i];
                 index = i;
             }

@@ -1,5 +1,6 @@
 package Game;
 
+import Game.API.API;
 import Game.ColodaCards.Coloda;
 import Game.Players.Player;
 
@@ -36,6 +37,16 @@ public class Rules {
            return gameStrategy;
    }
 
+   public void reMakePriorityPlayer(int numTakeVzPlayer){
+            Player temp;
+       for (int i = 0; i < numTakeVzPlayer; i++) {
+           temp = players[i];
+           players[i] = players[i+1];
+           players[i+1] = temp;
+       }
+
+   }
+
     //в массиве будет начинаться с 0 игрока, но он будет перемешиваться в начале игры
     public void makePriorityPlayer(){
         int j;  Player temp;
@@ -49,14 +60,18 @@ public class Rules {
         }
     }
 
-    public void makeChoices(){
+    public void makeChoices(API logger,int numRazd){
         boolean flag = false;
         List<Integer> choices = new ArrayList<>(players.length);
-        winnerMast = 0; winnerVzyatka = 6; int countPass = 0;
+        winnerMast = 0; winnerVzyatka = 6;
+        int countPass = 0;
         while (!flag) {
             for (int i = 0; i < players.length && !flag; i++) {
+                if (choices.size()<3) {
+                    choices.add(i, players[i].getChoiceTypeGame(winnerMast, winnerVzyatka,logger,numRazd));//todo все выбирают пасс даже с норм взятками!
+                }
                 if (choices.get(i)!= -1) {//перейдёт к другому игроку, если текущий пасс
-                    choices.set(i, players[i].getChoiceTypeGame(winnerMast, winnerVzyatka));//после опроса игроков в торгах надо определить:
+                    choices.set(i, players[i].getChoiceTypeGame(winnerMast, winnerVzyatka,logger,numRazd));//после опроса игроков в торгах надо определить:
                     if (choices.get(i) == -2) { //кто их выиграл или пасанул, или ушёл в мизер, или 2виста или пас и полвиста.
                         gameStrategy= "mizer";
                         players[i].setGameStyle("mizer");
@@ -70,16 +85,36 @@ public class Rules {
                             for (int j = 0; j < players.length; j++) {
                                 players[i].setGameStyle("pass");
                             }
-                        } else if (countPass == 2) {
+                        } else if (countPass == 2 && choices.get(i)>=0) {
                             flag=true;
                             gameStrategy = "vzyatka";
                             rulePlayer= getWinnerTorg(choices);//номер игрока победителя торгов
+                            //players[rulePlayer].setGameStyle("vzyatka");
+                            //logger.torgiInfo(players[rulePlayer],players[rulePlayer].getGameStyle(),numRazd);
                             getVistOrPass(choices);
                         }
                     }
+                }else {
+                    countPass++;
+                    if (countPass == 3) {
+                        flag = true;
+                        gameStrategy = "raspasovka";
+                        for (int j = 0; j < players.length; j++) {
+                            players[i].setGameStyle("pass");
+                        }
+                    }
                 }
+                players[i].setGameStyle(helpSetGameStyle(choices.get(i)));
+                logger.torgiInfo(players[i],players[i].getGameStyle(),numRazd);
             }
         }
+    }
+
+    private String helpSetGameStyle(int numb){
+        if (numb==-2) return "mizer";
+        if (numb==-1) return "pass";
+        if (numb>=0) return "vzyatka "+ numb;
+        return "";
     }
 
     private void getVistOrPass(List<Integer> choices){//-5 это вист; -4 это пасс
@@ -115,9 +150,5 @@ public class Rules {
                 default:
                     return "errorMast!";
         }
-    }
-
-    private class Calc{
-        
     }
 }
