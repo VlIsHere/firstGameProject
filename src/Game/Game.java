@@ -1,8 +1,8 @@
 package Game;
 
 import Game.API.API;
-import Game.Players.Dealer;
-import Game.Players.Player;
+import Game.Conventions.*;
+import Game.Players.*;
 
 public class Game {
     private Player[] players;
@@ -10,6 +10,7 @@ public class Game {
     private API api;
     private StyleGame styleGame;
     private int cntRazdach;
+    private Convention convention;
 
     public Game(){
         players = new Player[3];
@@ -19,6 +20,7 @@ public class Game {
         api = new API(System.in,System.out);
         rules = new Rules(players);
         styleGame = new StyleGame();
+        convention = new Sochinka();
     }
 
     public void play(){
