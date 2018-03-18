@@ -27,6 +27,7 @@ public class Game {
     public void play(){
         int winnerTorg;
         System.out.println("Процесс игры");
+        cntRazdach = api.askAboutRazdacha();
         for (int i = 0; i < cntRazdach; i++) {
             currRazdacha = i;
             Dealer.dealer.reshuffle();
@@ -40,6 +41,8 @@ public class Game {
             if (winnerTorg==-1) System.out.println("РАСПАСОВКА");
             else System.out.println("В торгах победил: " + players[styleGame.rulePlayer].getName());
             styleGame.goStrategy(rules.getGameStrategy());
+            api.resPlayers(players);
+            api.resPlayersKoef(players);
             api.resultsRazdachi(players);
             api.resPlayers(players);
         }
@@ -59,6 +62,10 @@ public class Game {
         System.out.println(api.getResPlayers(8,0));
         System.out.println("API8-------------------");
         System.out.println(api.getResPlayersKoef(9,2));
+        System.out.println("---------------------------API6-----------------------------------------");
+        for (int i = 0; i < cntRazdach; i++) {
+            System.out.println(api.getAllRazdacha(i));
+        }
     }
 
     private class StyleGame{

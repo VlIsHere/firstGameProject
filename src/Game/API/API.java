@@ -23,6 +23,7 @@ public class API {
     private ArrayList<StringBuffer> resultsRazdachi;
     private ArrayList<StringBuffer> allRazdacha;
     private ArrayList<StringBuffer[]> resPlayers;
+    private ArrayList<StringBuffer[]> rPlayersKoef;
     private final Pattern pattern = Pattern.compile("^[1-9]$");
 
     public API (InputStream is, OutputStream os){
@@ -36,6 +37,7 @@ public class API {
         resultsRazdachi = new ArrayList<>();
         allRazdacha = new ArrayList<>();
         resPlayers = new ArrayList<>();
+        rPlayersKoef = new ArrayList<>();
     }
 
     private boolean checkNumb(String s){
@@ -93,6 +95,11 @@ public class API {
         resPlayers.get(Game.currRazdacha)[0] = new StringBuffer();
         resPlayers.get(Game.currRazdacha)[1] = new StringBuffer();
         resPlayers.get(Game.currRazdacha)[2] = new StringBuffer();
+
+        rPlayersKoef.add(new StringBuffer[3]);
+        rPlayersKoef.get(Game.currRazdacha)[0] = new StringBuffer();
+        rPlayersKoef.get(Game.currRazdacha)[1] = new StringBuffer();
+        rPlayersKoef.get(Game.currRazdacha)[2] = new StringBuffer();
     }
 //api1
     public StringBuffer getPlayers(int numRazd) {
@@ -120,23 +127,23 @@ public class API {
     }
 //api3
     public StringBuffer getTorgi(int numRazd){
-        return torgi.get(numRazd).insert(0,"№ раздачи: " + numRazd);
+        return torgi.get(numRazd).insert(0,"\n№ раздачи: " + numRazd + "\n");
     }
 
     public void torgiInfo(Player player,String hisChoice){
          println(player.getName() + " выбрал " + hisChoice);
-         torgi.get(Game.currRazdacha).append(player.getName() + " выбрал " + hisChoice);
+         torgi.get(Game.currRazdacha).append("\n"+player.getName() + " выбрал " + hisChoice+"\n");
     }
 //api2
     public StringBuffer getInfoAnalyzeTorgi(int numRazd){
-        return analyzeTorgi.get(numRazd).insert(0,"№ раздачи: " + numRazd+ "\n"+ "прикуп: "
+        return analyzeTorgi.get(numRazd).insert(0,"\n№ раздачи: " + numRazd+ "\n"+ "прикуп: "
                                             + Dealer.dealer.giveCard(30) + " "
-                                            + Dealer.dealer.giveCard(31));
+                                            + Dealer.dealer.giveCard(31)+"\n");
     }
 
     public void infoAnalyzeTorgi(Player player,int dMastSize,String mast , int cntVzyatok){
         println(player.getName() + " рассчитал, что при козыре " + mast + " возможно взять " + cntVzyatok + " взяток");
-        analyzeTorgi.get(Game.currRazdacha).append(player.getName() + " рассчитал, что при козыре " + mast + " возможно взять " + cntVzyatok + " взяток");
+        analyzeTorgi.get(Game.currRazdacha).append("\n"+player.getName() + " рассчитал, что при козыре " + mast + " возможно взять " + cntVzyatok + " взяток"+"\n");
     }
 
     //api4
@@ -148,8 +155,8 @@ public class API {
         for (int i = 0; i < hod.getCountCards(); i++) {
             println(players[i].getName() + " сделал ход " + i + " картой " + hod.getVzyatka()[i] +
                     "(Он имеет " + players[i].getVzyatkiSize() + " взяток(-тки))");
-            rozygrysh.get(Game.currRazdacha).append(players[i].getName() + " сделал ход " + i +
-                    " картой " + hod.getVzyatka()[i] + "(Он имеет " + players[i].getVzyatkiSize() + " взяток(-тки))");
+            rozygrysh.get(Game.currRazdacha).append("\n"+players[i].getName() + " сделал ход " + i +
+                    " картой " + hod.getVzyatka()[i] + "(Он имеет " + players[i].getVzyatkiSize() + " взяток(-тки))"+"\n");
         }
     }
 //api5
@@ -162,8 +169,8 @@ public class API {
     public void resultsRazdachi(Player[] players){
         for (int i = 0; i < players.length; i++) {
             Player pl = players[i];
-            resultsRazdachi.get(Game.currRazdacha).append(pl.getName() + " взял взяток " + pl.getVzyatkiByNumRazd(Game.currRazdacha).size() +
-                    "; Пуля: " + pl.getPulya() + "\nГора:" + pl.getGora() + "\nВисты: " + pl.vistsToString());
+            resultsRazdachi.get(Game.currRazdacha).append("\n"+pl.getName() + " взял взяток " + pl.getVzyatkiByNumRazd(Game.currRazdacha).size() +
+                    "\nПуля: " + pl.getPulya() + "\nГора:" + pl.getGora() + "\nВисты: " + pl.vistsToString()+"\n");
         }
     }
 //api 6
@@ -186,7 +193,7 @@ public class API {
 
     public void resPlayers(Player[] pls){
         for (int i = 0; i < pls.length; i++) {
-            resPlayers.get(Game.currRazdacha)[i].append(pls[i].getName() + " взял взяток " + pls[i].getVzyatkiByNumRazd(Game.currRazdacha).size()
+            resPlayers.get(Game.currRazdacha)[i].append("\n"+pls[i].getName() + " взял взяток " + pls[i].getVzyatkiByNumRazd(Game.currRazdacha).size()
                     + "; Пуля: " + pls[i].getPulya() + "\nГора:" + pls[i].getGora() + "\nВисты: " + pls[i].vistsToString());
         }
     }
@@ -198,7 +205,7 @@ public class API {
 //вистов всех игроков, как если бы игра была прекращена после указанной
 //раздачи и надо было бы подсчитывать результаты).
     public StringBuffer getResPlayersKoef(int numRazd,int idPlayer){
-        return resPlayers.get(numRazd)[idPlayer];
+        return rPlayersKoef.get(numRazd)[idPlayer];
     }
 
     public void resPlayersKoef(Player[] pls){
@@ -209,7 +216,7 @@ public class API {
             for (int j = 0; j < pls[i].getVisty().length; j++) {
                 sumvist+=pls[i].getVisty()[j].getCount();
             }
-            resPlayers.get(Game.currRazdacha)[i].append(pls[i].getName() + " " + (koef+sumvist/10));
+            rPlayersKoef.get(Game.currRazdacha)[i].append(pls[i].getName() + " " + (koef+sumvist/10));
         }
     }
 }

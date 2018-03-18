@@ -90,7 +90,7 @@ public class Rules {
                         winnerVzyatka++;
                         choices.set(i,0);
                     }
-                    if (tmp == -1) {
+                    if (tmp == -1) {//danger
                             if (countPass == 2) {
                             flag=true;
                             gameStrategy = "vzyatka";
