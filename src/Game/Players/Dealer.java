@@ -18,7 +18,7 @@ public class Dealer {
         return coloda.getCard(i);
     }
 
-    //razdacha
+    //currRazdacha
     public void distributionCards(Player[] players){
         for (int i = 0; i < players.length; i++) {
             for (int j = i*10; j < 10*(i+1); j++) {

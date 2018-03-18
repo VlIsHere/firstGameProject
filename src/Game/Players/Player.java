@@ -3,9 +3,7 @@ package Game.Players;
 import Game.API.API;
 import Game.ColodaCards.Card;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Player {
     private String name;
@@ -19,9 +17,63 @@ public class Player {
     private ArrayList<Card> chervy;
     private ArrayList<Card> dominateMast;
     private String gameStyle;
-    private int cntVzyatok;
+    private int cntVzyatok;//взятки, которые игрок должен взять, если он выиграл торги
     private int realCntVzyatok;
+    private Map<Integer,List<Card[]>> vzyatInRazd;
     private List<Card[]> vzyatki;
+    private String styleGame;
+    private Vist[] visty;
+    private int gora;
+    private int pulya;
+
+    public List<Card[]> getVzyatkiByNumRazd(int num){
+        return vzyatInRazd.get(num);
+    }
+
+    public Vist[] getVisty() {
+        return visty;
+    }
+
+    public String vistsToString(){
+        String s = "";
+        for (int i = 0; i < visty.length; i++) {
+            s+="\nВисты на " + visty[i].toString();
+        }
+        return s;
+    }
+
+    public void setVistsCount(int numb,int count) {
+        this.visty[numb].setCount(count);
+    }
+
+    public int getGora() {
+        return gora;
+    }
+
+    public void setGora(int gora) {
+        this.gora = gora;
+    }
+
+    public int getPulya() {
+        return pulya;
+    }
+
+    public void setPulya(int pulya) {
+        this.pulya = pulya;
+    }
+
+    public void setStyleGame(String styleGame){
+        this.styleGame = styleGame;
+    }
+
+    public void setVists(String name1Vist, String name2Vist){//висты на др игроков
+        getVisty()[0].setNamePlForVist(name1Vist);
+        getVisty()[1].setNamePlForVist(name2Vist);
+    }
+
+    public void setMaxVzyatka(int numb){
+        maxVzyatka = numb;
+    }
 
     public int getVzyatkiSize(){return vzyatki.size();}
 
@@ -35,6 +87,10 @@ public class Player {
         this.cntVzyatok = cntVzyatok;
     }
 
+    public int getCntVzyatok() {
+        return cntVzyatok;
+    }
+
     public void setGameStyle(String gameStyle) {
         this.gameStyle = gameStyle;
     }
@@ -46,13 +102,26 @@ public class Player {
        trefy= new ArrayList<>(8);
        bubi= new ArrayList<>(8);
        chervy= new ArrayList<>(8);
+       masti = new ArrayList<>(4);
        gameStyle = "";
        vzyatki = new LinkedList<>();
+       vzyatInRazd = new HashMap<>();
        realCntVzyatok = 0;
+        visty = new Vist[2];
+        visty[0] = new Vist();
+        visty[1] = new Vist();
+    }
+
+    public List<Card[]> getVzyatki(){
+        return vzyatki;
+    }
+
+    public void resetVzyatki(){
+        vzyatki = new LinkedList<>();
     }
 
     public Card doHod(Card[] cardsShown,int countCardsOpened){
-        Card res = null; int indexRes = 0;
+        Card res; int indexRes;
         if (gameStyle.equals("mizer") || gameStyle.equals("pass") || gameStyle.equals("")){
             if (countCardsOpened==0){
                 indexRes = findIndMinCard();
@@ -77,7 +146,7 @@ public class Player {
                     if (indexRes==-1) indexRes = findIndMinCard();
                 }
             }else {
-                indexRes = (int)(Math.random());
+                indexRes = findIndMaxCard();
             }
         }
         res = razdacha.get(indexRes);
@@ -85,13 +154,15 @@ public class Player {
         return res;
     }
 
-
-
     public void takeVzyatka(Card[] cards){
         vzyatki.add(cards);
     }
 
-    public int getCardBiggerThis(Card card){
+    public void putVzyatkiInRazdacha(int numRazd,List<Card[]> vzyatki){
+        vzyatInRazd.put(numRazd,vzyatki);
+    }
+
+    private int getCardBiggerThis(Card card){
         for (int i = 0; i < razdacha.size(); i++) {
             if (razdacha.get(i).compareTo(card)>0 && razdacha.get(i).getMast().equals(card.getMast())){
                 return i;
@@ -103,59 +174,71 @@ public class Player {
             }
         }
         //если нет такой масти, выбрасываем козырь
-        for (int i = 0; i < razdacha.size(); i++) {
-            if (razdacha.get(i).getMast().equals(dominateMast.get(0).getMast())){
-                return i;
+        if (dominateMast!= null) {
+            for (int i = 0; i < razdacha.size(); i++) {
+                if (razdacha.get(i).getMast().equals(dominateMast.get(0).getMast())) {
+                    return i;
+                }
             }
         }//нет козырей - просто random
         return -1;
     }
 
-    public int getCardSmallerThis(Card card){
+    private int getCardSmallerThis(Card card){
         for (int i = 0; i < razdacha.size(); i++) {
             if (razdacha.get(i).compareTo(card)<0 && razdacha.get(i).getMast().equals(card.getMast())){
                 return i;
             }
-        }//если нет по масти карты младше - выбросим какую есть
+        }
+        //если нет по масти карты младше - выбросим какую есть
         for (int i = 0; i < razdacha.size(); i++) {
             if (razdacha.get(i).getMast().equals(card.getMast())){
                 return i;
             }
         }
-        //если нет такой масти, выбрасываем козырь
-        for (int i = 0; i < razdacha.size(); i++) {
-            if (razdacha.get(i).getMast().equals(dominateMast.get(0).getMast())){
-                return i;
+        //если нет такой масти, выбрасываем козырь, если он есть
+        if (dominateMast!= null) {
+            for (int i = 0; i < razdacha.size(); i++) {
+                if (razdacha.get(i).getMast().equals(dominateMast.get(0).getMast())) {
+                    return i;
+                }
             }
         }//нет козырей - просто random
         return -1;
     }
 
-    public int getChoiceTypeGame(int mast,int oldMaxVzyatka,API api,int numRazd){
-        //todo подумай над алгоритмом принятия решения о контракте!!!!
-       // if (mast==-3) return (int)Math.round(Math.random()-4);// это выбор, когда 1 пасанул, а другой либо пас, либо полвиста
-        if (mast>4){//0-piki;1-trefy;2-bubi;3-chervy;4-bez kozyrya
-            mast =0;//чтоб контролировать переход по "ступеням" взяток
-            oldMaxVzyatka++;
-        }
+    public int getChoiceTypeGame(int mast,int oldMaxVzyatka,API api){
+        Random rnd = new Random();
         if (maxVzyatka ==0) {
             maxVzyatka = analyzeCards();
-            api.infoAnalyzeTorgi(this,dominateMast.size(),dominateMast.get(0),maxVzyatka,numRazd);
-            if (maxVzyatka<6) return (int) Math.round(Math.random()-2);//-1 - pass; -2 - mizer
+            api.infoAnalyzeTorgi(this,dominateMast.size(),dominateMast.get(0).getMast(),maxVzyatka);
+            if (maxVzyatka<6) {
+                if (maxVzyatka<4) return -2;
+                else return -1;
+            }
+            else {
+                return ++mast;
+            }
         }
         else if (oldMaxVzyatka<maxVzyatka) {
-            if (mast==numbInmast && Math.round(Math.random())==0) return mast;
+            if (mast==numbInmast && rnd.nextInt(1)==0) return mast;
             else return ++mast;
         }
         else if (oldMaxVzyatka==maxVzyatka){
             if (mast<numbInmast) return ++mast;
-            else return -1;//todo tyt problem if 2 players will be identical
+            else return -1;
         }
         return -1;//pass
     }
+
 //код определения доминирующей масти в руке и возможность участвовать в торгах(колво взяток до опред числа)
     private int analyzeCards(){
-        int res = 0;
+        cntVzyatok = 0;
+        piki.clear();
+        trefy.clear();
+        bubi.clear();
+        chervy.clear();
+        int res;
         int sum = 0;
         int tmp;
         for (int i = 0; i < 10; i++) {
@@ -166,17 +249,12 @@ public class Player {
             if (tmp>26 && tmp<35) bubi.add(razdacha.get(i));//bubi
             if (tmp>36) chervy.add(razdacha.get(i));//chervy
         }
-        masti = new ArrayList<>(4);
         masti.add(piki);
         masti.add(trefy);
         masti.add(bubi);
         masti.add(chervy);
-        tmp = 0;
-        for (int i = 0; i < 3; i++) {
-            if (masti.get(i).size()>masti.get(i+1).size()) tmp = i;
-        }
-        numbInmast = tmp;
-        dominateMast = masti.get(tmp);
+        dominateMast = Collections.max(masti, Comparator.comparingInt(ArrayList::size));
+        numbInmast = masti.indexOf(dominateMast);
         if (dominateMast.size()>=4) {
             tmp = 0;
             for (int i = 0; i < dominateMast.size(); i++) {
@@ -184,7 +262,7 @@ public class Player {
             }
             if (tmp>1) res = 6+(sum-tmp)/2;
             else res = 5 + (sum - tmp)/2;
-        } else res = sum/2;
+        } else res = sum/2+1;
         res += (int) Math.round(Math.random());//возможность взятки от прикупа
         return res;
     }
@@ -200,12 +278,12 @@ public class Player {
     }
 
     public int findIndMinCard(){
-        int min = razdacha.get(0).getCode()%10;
-        int indexMin = 0; Card tmp = null;
+        int min = razdacha.get(0).getCode();
+        int indexMin = 0; Card tmp;
         for (int i = 0; i < razdacha.size(); i++) {
             tmp = razdacha.get(i);
-            if (tmp.getCode()%10<min){
-                min = tmp.getCode()%10;
+            if (tmp.getCode()<min && tmp.getCode()%10<min%10){
+                min = tmp.getCode();
                 indexMin = i;
             }
         }
@@ -213,24 +291,15 @@ public class Player {
     }
 
     public int findIndMaxCard(){
-        int max = razdacha.get(0).getCode()%10;
-        int indexMax = 0; Card tmp = null;
+        int max = razdacha.get(0).getCode();
+        int indexMax = 0; Card tmp;
         for (int i = 0; i < razdacha.size(); i++) {
             tmp = razdacha.get(i);
-            if (tmp.getCode()%10>max){
-                max = tmp.getCode()%10;
+            if (tmp.getCode()>max && tmp.getCode()%10>max%10){
+                max = tmp.getCode();
                 indexMax = i;
             }
         }
         return indexMax;
-    }
-
-    private class Calc{
-        private String typeConvention;
-        private int vistLeft;
-        private int vistRight;
-        private int mountain;
-
-
     }
 }
