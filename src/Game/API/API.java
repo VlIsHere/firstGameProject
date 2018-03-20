@@ -24,7 +24,7 @@ public class API {
     private ArrayList<StringBuffer> allRazdacha;
     private ArrayList<StringBuffer[]> resPlayers;
     private ArrayList<StringBuffer[]> rPlayersKoef;
-    private final Pattern pattern = Pattern.compile("^[1-9]$");
+    private static final Pattern pattern = Pattern.compile("^[1-9][0-9]?$");
 
     public API (InputStream is, OutputStream os){
         reader = new Scanner(is);
@@ -65,7 +65,7 @@ public class API {
         writer.flush();
         String s = reader.nextLine();
         while (!checkNumb(s)) {
-            writer.println("Неверно! Надо ввести число от 1 до 9!");
+            writer.println("Неверно! Надо ввести число от 1 до 99!");
             s = reader.nextLine();
         }
         inputInSB("количество раздач: ");

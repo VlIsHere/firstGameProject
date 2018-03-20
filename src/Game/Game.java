@@ -70,7 +70,6 @@ public class Game {
 
     private class StyleGame{
         private int rulePlayer;
-
         void process(){
             Hod hod;
             int tmp;
